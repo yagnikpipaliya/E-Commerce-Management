@@ -24,21 +24,48 @@
 
 ### Admin Side
 
-#### **`Admin login`**
+#### **`Login`**
 
 <img src="/output/admin6.PNG" height="300" />
 
-## 📦 Installation
+#### **`Create Store`**
 
-Clone the repository and install the dependencies:
+<img src="/output/admin1.PNG" height="300" />
 
-```bash
-**1. For frontend**
-git clone https://github.com/yagnikpipaliya/E-Commerce-Management.git
-cd E-Commerce-Management
-npm install
+#### **`Stores`**
 
-**2. For backend**
-cd Menu CRUD
-npm i
-```
+<img src="/output/admin2.PNG" height="300" />
+
+#### **`Edit Store`**
+
+<img src="/output/admin3.PNG" height="300" />
+
+<img src="/output/admin4.PNG" height="300" />
+
+#### **`After delete store`**
+
+<img src="/output/admin5.PNG" height="300" />
+
+### Store Side
+
+#### **`Seller Login`**
+
+<img src="/output/seller1.PNG" height="300" />
+
+#### **`Create Item`**
+
+<img src="/output/seller2.PNG" height="300" />
+
+#### **`Stores`**
+
+<img src="/output/seller3.PNG" height="300" />
+
+#### **`Edit Store`**
+
+<img src="/output/seller4.PNG" height="300" />
+
+<img src="/output/seller5.PNG" height="300" />
+
+#### **`After delete store`**
+
+<img src="/output/seller6.PNG" height="300" />
