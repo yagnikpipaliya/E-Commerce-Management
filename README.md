@@ -24,7 +24,8 @@
 
 ### Admin Side
 
-**`Admin login`**
+#### **`Admin login`**
+
 <img src="/output/admin6.PNG" height="300" />
 
 ## 📦 Installation
