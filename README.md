@@ -25,7 +25,7 @@
 ### Admin Side
 
 **`Admin login`**
-<img src="../../E-Commerce Management/admin6.PNG" width="200" height="200" />
+<img src="/output/admin6.PNG" height="300" />
 
 ## 📦 Installation
 
