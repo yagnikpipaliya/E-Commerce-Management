@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const Store = () => {
-  const router = useRouter();
+  const router = useRouter(); 
   const [user, setUser] = useState("");
   const [item, setItem] = useState([]);
 
@@ -91,9 +91,8 @@ const Store = () => {
                 return (
                   <tr key={i} className="border-b">
                     <td className="p-3">
-                    <div className="w-full relative pt-[100%]">
-                      <Image src={`/${item.image}`} alt={item.image} objectFit="fill" fill
-          className="w-full h-full top-0 left-0 object-cover rounded-2xl" />
+                      <div className="w-full relative pt-[100%]">
+                        <Image src={`/${item.image}`} alt={item.image} objectFit="fill" fill className="w-full h-full top-0 left-0 object-cover rounded-2xl" />
                       </div>
                     </td>
                     <td className="p-3">{item._id}</td>

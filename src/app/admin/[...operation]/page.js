@@ -1,8 +1,8 @@
 "use client";
-// import AdminState from "@/app/context/admin/AdminState";
-// import adminStore from "../../context/admin/adminStore";
+import { createStore, updateStore } from "@/app/redux/e-commerce/adminSlice";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Create = ({ params }) => {
   let { operation } = params;
@@ -12,6 +12,7 @@ const Create = ({ params }) => {
 
   const [title, setTitle] = useState("Create");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (operation[0] == "update") {
@@ -22,12 +23,11 @@ const Create = ({ params }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    operation[0] == "update" ? updateStore() : createStore();
+    operation[0] == "update" ? dispatch(updateStore({username,password,gst,router,operation})) : dispatch(createStore({username,password,gst,router}));
   };
 
   const fetchStore = async () => {
     const response = await (await fetch(`http://localhost:3000/admin/store/${operation[1]}`)).json();
-    console.log(response != null);
     if (response != null) {
       setUsername(response.username);
       setPassword(response.password);
@@ -35,37 +35,36 @@ const Create = ({ params }) => {
     }
   };
 
-  const createStore = async () => {
-    const response = await fetch("http://localhost:3000/admin/createstore", {
-      method: "POST",
-      body: JSON.stringify({ username, password, gst }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-    if (response.status == 201) {
-      router.push("/admin");
-    }
-  };
+  // const createStore = async () => {
+  //   const response = await fetch("http://localhost:3000/admin/createstore", {
+  //     method: "POST",
+  //     body: JSON.stringify({ username, password, gst }),
+  //     headers: {
+  //       "Content-type": "application/json; charset=UTF-8",
+  //     },
+  //   });
+  //   if (response.status == 201) {
+  //     router.push("/admin");
+  //   }
+  // };
 
-  const updateStore = async () => {
-    const response = await fetch(`http://localhost:3000/admin/updatestore/${operation[1]}`, {
-      method: "PUT",
-      body: JSON.stringify({ username, password, gst }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.status == 200) {
-      router.push("/admin");
-    }
-  };
+  // const updateStore = async () => {
+  //   const response = await fetch(`http://localhost:3000/admin/updatestore/${operation[1]}`, {
+  //     method: "PUT",
+  //     body: JSON.stringify({ username, password, gst }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  //   if (response.status == 200) {
+  //     router.push("/admin");
+  //   }
+  // };
 
   return (
     <>
       <div className="min-h-screen flex justify-center items-center">
         <div className="flex justify-center items-center p-8 bg-white">
-          {/* w-full */}
           <form onSubmit={onSubmit}>
             <h1 className="text-4xl pb-4 font-bold">
               {" "}

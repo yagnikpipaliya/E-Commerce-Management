@@ -1,28 +1,34 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStore, deleteStore } from "../redux/e-commerce/adminSlice";
 
 const Admin = () => {
-  const [store, setStore] = useState([]);
+  // const [store, setStore] = useState([]);
+  const {store} = useSelector((state) => state.admin || [])
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchStore();
+    dispatch(fetchStore());
+    // fetchStore()
+    console.log(store)
   }, []);
 
-  const fetchStore = async () => {
-    const response = await (await fetch("http://localhost:3000/admin/store")).json();
-    console.log(response);
-    setStore(response);
-  };
+  // const fetchStore = async () => {
+  //   const response = await (await fetch("http://localhost:3000/admin/store")).json();
+  //   console.log(response);
+  //   setStore(response);
+  // };
 
-  const deleteStore = async (id) => {
-    const response = await fetch(`http://localhost:3000/admin/deletestore/${id}`, {
-      method: "DELETE",
-    });
-    if (response.status == 200) {
-      fetchStore();
-    }
-  };
+  // const deleteStore = async (id) => {
+  //   const response = await fetch(`http://localhost:3000/admin/deletestore/${id}`, {
+  //     method: "DELETE",
+  //   });
+  //   if (response.status == 200) {
+  //     fetchStore();
+  //   }
+  // };
 
   return (
     <>
@@ -51,7 +57,7 @@ const Admin = () => {
               </tr>
             </thead>
             <tbody className="">
-              {store?.map((store, i) => {
+              {store.map((store, i) => {
                 return (
                   <tr key={i} className="border-b">
                     <td className="p-3">{store._id}</td>
@@ -67,7 +73,8 @@ const Admin = () => {
                       <button
                         type="submit"
                         onClick={() => {
-                          deleteStore(store._id);
+                          dispatch(deleteStore(store._id));
+                          // deleteStore(store._id);
                         }}
                         className="p-2 rounded bg-red-100 text-red-800 hover:font-semibold"
                       >
