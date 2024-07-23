@@ -7,7 +7,7 @@ const routes = require('./routes/routes')
 const storeRoutes = require('./routes/store')
 
 require("dotenv").config();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const DBURL = process.env.DATABASE_URL;
 
 mongoose

@@ -41,3 +41,39 @@ body {
 }
 
 }
+
+.bg-primary{
+   background-color: #f3f4f6; /*// bg-grey-100 */
+  /* background-color: #D8DDDE; */
+}
+input::file-selector-button {
+  /* font-weight: bold; */
+  /* color: dodgerblue; */
+  /* padding: 1em; */
+  /* border: thin solid grey; */
+  /* @apply border-none; */
+  @apply bg-gray-100;
+  @apply border ;
+  /* @apply border-r-gray-50; */
+  @apply py-3;
+  @apply rounded-s-md
+  /* border-radius: 3px; */
+}
+.ErrorMessage{
+  @apply text-red-800;
+  @apply font-medium
+}
+.slick-prev:before, .slick-next:before {
+  content: none !important;
+}
+.slick-prev, .slick-next{
+  /* width: auto !important; */
+  top: 40% !important;
+}
+.slick-prev:before, .slick-next:before {  
+  font-size: 30px !important;
+}
+.custom-transition {
+  transition: all 0.5s cubic-bezier(0, 0, 0.2, 1);
+  transform-origin: center;
+}

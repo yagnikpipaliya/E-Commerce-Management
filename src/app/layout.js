@@ -3,6 +3,8 @@ import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import theme from "./components/theme";
 // const inter = Inter({ subsets: ["latin"] });
 const inter = Montserrat({ subsets: ["latin"] });
 
@@ -14,8 +16,17 @@ const inter = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        {/* <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" /> */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" />
+      </head>
       <body className={inter.className}>
-        <Provider store={store}>{children}</Provider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline/>
+          <Provider store={store}>{children}</Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const multer = require("multer");
+const jwt = require("jsonwebtoken");
+const cloudinary = require("../cloudinary");
 const Item = require("../Model/item");
 
 router.get("/", async (req, res) => {
@@ -38,11 +40,16 @@ const upload = multer({ storage });
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      return res.status(400).json({ error: "No file uploaded" });
     }
     const id = req.header("token");
+    // const verify= jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzljY2EyYjA3NTk4ZWU3MzFjNDA2YiIsImlhdCI6MTcxODEyNTI0NH0.Adgg06RVIci1rHhq7uRiO2v18ZnVesL5Ras6nG6IDu4',process.env.JWT_SECRET_KEY)
+    // console.log(verify)
     const { productname, price, stock } = req.body;
     const image = req.file.filename;
+    const productImage = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
+    console.log(`req.files ${req.file.path} `);
+    console.log(`productImage ${productImage.secure_url} `);
     const addItem = await new Item({ image, productname, price, stock, store: id }).save();
     // const addItem = await new Item(req.body).save();
     res.status(201).json(addItem);
