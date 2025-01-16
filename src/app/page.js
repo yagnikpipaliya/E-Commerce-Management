@@ -8,19 +8,31 @@ import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { useRouter } from "next/navigation";
 import GoogleSignIn from "./components/GoogleSignIn";
+import { useDispatch, useSelector } from "react-redux";
+import { loginWithGoogle } from "./redux/e-commerce/authSlice";
+import { fetchProducts } from "./redux/e-commerce/productSlice";
 
 const Home = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { profile, loading, error } = useSelector((state) => state.auth);
+  const { products } = useSelector((state) => state.products);
+
   const [role, setRole] = useState("store");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
 
   useEffect(() => {
-    if (localStorage.getItem("token") != null) {
-      router.push("/store");
-    }
+    // if (localStorage.getItem("token") != null) {
+    //   router.push("/store");
+    // }
+    // getAllProducts()
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -118,6 +130,26 @@ const Home = () => {
     ],
   };
 
+  // Load the profile from localStorage in useEffect (client-side only)
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const storedProfile = localStorage.getItem("profile");
+  //     if (storedProfile) {
+  //       dispatch(loginWithGoogle.fulfilled(JSON.parse(storedProfile)));
+  //     }
+  //   }
+  // }, [dispatch]);
+
+  const getAllProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/products", {
+        method: "GET",
+      });
+    } catch (error) {
+      console.error("getAllProducts err: ", error);
+    }
+  };
+
   return (
     <>
       <nav className="bg-white shadow-lg sticky top-0 z-50">
@@ -180,9 +212,15 @@ const Home = () => {
                   <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{itemCount}</span>
                 )}
               </a>
-              <button onClick={toggleLoginModal} className="py-2 px-3 bg-[#057C80] text-white rounded hover:bg-opacity-90 transition duration-300">
-                Log In
-              </button>
+              {profile !== null ? (
+                <div>
+                  <img src={`${profile?.picture}`} className="rounded-full w-10" alt="profile" />
+                </div>
+              ) : (
+                <button onClick={toggleLoginModal} className="py-2 px-3 bg-[#057C80] text-white rounded hover:bg-opacity-90 transition duration-300">
+                  Log In
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -247,7 +285,7 @@ const Home = () => {
             <div className="bg-white w-full max-w-md p-6 rounded shadow-lg transform transition-all duration-300 ease-in-out">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">Login</h2>
-                {/* <button onClick={toggleLoginModal}>
+                <button onClick={toggleLoginModal}>
                   <svg
                     className="w-6 h-6 hover:text-red-500 transition duration-300"
                     xmlns="http://www.w3.org/2000/svg"
@@ -257,11 +295,11 @@ const Home = () => {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </button> */}
-                <GoogleSignIn/>
+                </button>
               </div>
               <div className="flex flex-col items-center space-y-4">
-                <button className="bg-[#057C80] text-white px-6 py-3 rounded shadow-md hover:bg-opacity-90 transition duration-300">Sign in with Google</button>
+                <GoogleSignIn toggleLoginModal={toggleLoginModal} />
+                {/* <button className="bg-[#057C80] text-white px-6 py-3 rounded shadow-md hover:bg-opacity-90 transition duration-300">Sign in with Google</button> */}
                 <span className="text-center text-sm">
                   Admin?{" "}
                   <a
@@ -351,26 +389,26 @@ const Home = () => {
         <div className=" max-w-6xl mx-auto px-4 py-12">
           <h2 className="text-3xl font-bold mb-8 ms-2">Featured Items</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-3 gap-4">
-            {items.map((item) => (
-              <div key={item.id} className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg hover:bg-white">
+            {products.map((item) => (
+              <div key={item._id} className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg hover:bg-white">
                 {/* relative */}
                 <div className="p-2 pb-0 w-full h-64 overflow-hidden relative">
                   <img
                     src="https://plus.unsplash.com/premium_photo-1670793631008-7b01f8f7c5ce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw5fHx8ZW58MHx8fHx8"
-                    alt={item.title}
+                    alt={item?.image}
                     loading="lazy"
                     className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 -z-10"
                   />
                   <img
                     src="https://images.unsplash.com/photo-1720065527129-e50696c384a9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxMXx8fGVufDB8fHx8fA%3D%3D"
-                    alt={item.title}
+                    alt={item?.image}
                     loading="lazy"
                     className="p-2 pb-0 w-full h-64 object-cover absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 -z-0"
                   />
                 </div>
                 <div className="p-2">
-                  <h3 className="text-xl font-bold">{item.title}</h3>
-                  <p className="text-gray-700">{item.price}</p>
+                  <h3 className="text-xl font-bold">{item?.productname || "Product Name"}</h3>
+                  <p className="text-gray-700">$ {item?.price || 0}</p>
                   <button className="mt-3 px-4 py-2 w-full bg-[#057C80] text-white hover:bg-opacity-90 transition duration-300">Add to Cart</button>
                 </div>
               </div>
@@ -411,8 +449,8 @@ const SampleNextArrow = (props) => {
         xmlns="http://www.w3.org/2000/svg"
         fill="#000000"
       >
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
         <g id="SVGRepo_iconCarrier">
           <path d="M8.793 5h1.414l7 7-7 7H8.793l7-7z"></path>
           <path fill="none" d="M0 0h24v24H0z"></path>
@@ -437,8 +475,8 @@ const SamplePrevArrow = (props) => {
         xmlns="http://www.w3.org/2000/svg"
         fill="#000000"
       >
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
         <g id="SVGRepo_iconCarrier">
           <path d="M6.793 12l7-7h1.414l-7 7 7 7h-1.414z"></path>
           <path fill="none" d="M0 0h24v24H0z"></path>

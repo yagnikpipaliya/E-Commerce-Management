@@ -4,6 +4,15 @@ const jwt = require("jsonwebtoken");
 const cloudinary = require("../cloudinary");
 const Item = require("../Model/item");
 
+// router.get("/products", async (req, res) => {
+//   try {
+//       console.log("get all items");
+//       const items = await Item.find();
+//       res.status(200).json(items);
+//     } catch (error) {
+//       res.status(500).json({ message: error.message });
+//     }
+// });
 router.get("/", async (req, res) => {
   try {
     const id = req.header("token");

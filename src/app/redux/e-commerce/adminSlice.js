@@ -5,22 +5,39 @@ export const fetchStore = createAsyncThunk("fetchStore", async () => {
   return response;
 });
 
-export const createStore = createAsyncThunk("createStore", async ({ username, password, gst, router }) => {
-  const response = await fetch("http://localhost:3000/admin/createstore", {
-    method: "POST",
-    body: JSON.stringify({ username, password, gst }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  });
-  if (response.status == 201) {
-    console.log(response.json());
-    router.push("/admin");
-    return response.json();
+export const createStore = createAsyncThunk("createStore", async ({ username, password, gst, router }, { rejectWithValue }) => {
+  try {
+    const response = await fetch("http://localhost:3000/admin/createstore", {
+      method: "POST",
+      body: JSON.stringify({ username, password, gst }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    console.log(response);
+
+    if (!response.ok) {
+      // Check if the response is successful (status 2xx)
+      const errorText = await response.text(); // Get the raw response text if it's not JSON
+      throw new Error(`Request failed with status ${response.status}: ${errorText}`);
+    }
+
+    // Try to parse the JSON response
+    const data = await response.json();
+    console.log(data);
+
+    if (response.status === 201) {
+      router.push("/admin");
+      return data;
+    }
+  } catch (error) {
+    console.error("createStore error:", error);
+    return rejectWithValue(error.message); // Pass the error message to Redux for handling
   }
 });
 
-export const updateStore = createAsyncThunk("updateStore", async ({username,password,gst,router,operation}) => {
+export const updateStore = createAsyncThunk("updateStore", async ({ username, password, gst, router, operation }) => {
   const response = await fetch(`http://localhost:3000/admin/updatestore/${operation[1]}`, {
     method: "PUT",
     body: JSON.stringify({ username, password, gst }),

@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./components/theme";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 // const inter = Inter({ subsets: ["latin"] });
 const inter = Montserrat({ subsets: ["latin"] });
 
@@ -18,14 +19,16 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         {/* <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" /> */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" />
       </head>
       <body className={inter.className}>
         <ThemeProvider theme={theme}>
-          <CssBaseline/>
-          <Provider store={store}>{children}</Provider>
+          <CssBaseline />
+          <GoogleOAuthProvider clientId="766021033888-5hu0johh235fqogi9m9ic612bof87nn3.apps.googleusercontent.com">
+            <Provider store={store}>{children}</Provider>
+          </GoogleOAuthProvider>
         </ThemeProvider>
       </body>
     </html>

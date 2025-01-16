@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const routes = require('./routes/routes')
 const storeRoutes = require('./routes/store')
+const productRoutes = require('./Items/routes/Items.route')
 
 require("dotenv").config();
 const PORT = process.env.PORT || 3001;
@@ -21,6 +22,12 @@ Connected to MongoDB at ${DBURL}`)
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app.use('/products', (req, res, next) => {
+  console.log(`Request received: ${req.method} ${req.url}`);
+  next();
+}, productRoutes); 
+
 app.use('/', storeRoutes);
 app.use('/admin', routes); 
 // app.use(express.static('uploads'))

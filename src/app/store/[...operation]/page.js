@@ -44,28 +44,62 @@ const Operation = ({ params }) => {
     setStock(data.stock);
   };
 
-  const createItem = async () => {
-    console.log(JSON.stringify({ image: img, productname: productName, price: price, stock: stock }));
-    console.log(img);
-    const formData = new FormData();
-    formData.append("image", img);
-    formData.append("productname", productName);
-    formData.append("price", price);
-    formData.append("stock", stock);
-    console.log(formData);
+  // const createItem = async () => {
+  //   console.log(JSON.stringify({ image: img, productname: productName, price: price, stock: stock }));
+  //   console.log(img);
+  //   const formData = new FormData();
+  //   formData.append("image", img);
+  //   formData.append("productname", productName);
+  //   formData.append("price", price);
+  //   formData.append("stock", stock);
+  //   console.log(formData);
 
-    const response = await fetch("http://localhost:3000/", {
-      method: "POST",
-      // body: JSON.stringify({ image: img, productname: productName, price: price, stock: stock }),
-      body: formData,
-      headers: {
-        token: localStorage.getItem("token"),
-        // "Content-type": "application/json",
-        // "Content-type": "multipart/form-data",
-      },
-    });
-    if (response.status == 201) {
-      router.push("/store");
+  //   const response = await fetch("http://localhost:3000/", {
+  //     method: "POST",
+  //     // body: JSON.stringify({ image: img, productname: productName, price: price, stock: stock }),
+  //     body: formData,
+  //     headers: {
+  //       token: localStorage.getItem("token"),
+  //       // "Content-type": "application/json",
+  //       // "Content-type": "multipart/form-data",
+  //     },
+  //   });
+  //   const data = await response.json();
+  //   console.log("create store data",data);
+  //   if (response.status == 201) {
+  //     router.push("/store");
+  //   }
+  // };
+
+  const createItem = async ({ images, productName, sellingPrice, costPrice, stock, category }) => {
+    try {
+      const formData = new FormData();
+      for (let i = 0; i < images.length; i++) {
+        formData.append("image", images[i]);
+      }
+      formData.append("productname", productName);
+      formData.append("sellingPrice", sellingPrice);
+      formData.append("costPrice", costPrice);
+      formData.append("stock", stock);
+      formData.append("category", category);
+  
+      const response = await fetch("http://localhost:3000/", {
+        method: "POST",
+        body: formData,
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+  
+      const data = await response.json();
+      console.log("Response from API:", data);
+  
+      if (response.status === 201) {
+        // Redirect to store page on successful creation
+        router.push("/store");
+      }
+    } catch (error) {
+      console.error("Error creating item:", error.message);
     }
   };
 
@@ -148,9 +182,13 @@ const Operation = ({ params }) => {
                 images: [],
               }}
               validationSchema={validationSchema}
-              onSubmit={(values) => {
+              onSubmit={(values, { setSubmitting }) => {
                 console.log(values);
                 // Handle form submission
+                setSubmitting(true);
+                createItem(values)
+                  .then(() => setSubmitting(false))
+                  .catch(() => setSubmitting(false));
               }}
             >
               {({ setFieldValue }) => (
@@ -174,6 +212,10 @@ const Operation = ({ params }) => {
                         accept=".jpg, .jpeg, .png"
                         multiple
                         onChange={(e) => handleImageChange(e, setFieldValue)}
+                        // onChange={(e) => {
+                        //   const files = Array.from(e.target.files);
+                        //   setFieldValue("images", files);
+                        // }}
                       />
                       <ErrorMessage name="images" component="div" className="ErrorMessage" />
                     </div>

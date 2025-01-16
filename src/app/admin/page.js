@@ -51,7 +51,7 @@ const Admin = () => {
               <tr>
                 <td className="p-4 font-semibold">ID</td>
                 <td className="p-4 font-semibold">Username</td>
-                <td className="p-4 font-semibold">Password</td>
+                {/* <td className="p-4 font-semibold">Password</td> */}
                 <td className="p-4 font-semibold">GST</td>
                 <td className="p-4 font-semibold">Action</td>
               </tr>
@@ -62,7 +62,7 @@ const Admin = () => {
                   <tr key={i} className="border-b">
                     <td className="p-3">{store._id}</td>
                     <td className="p-3">{store.username}</td>
-                    <td className="p-3">{store.password}</td>
+                    {/* <td className="p-3">{store.password}</td> */}
                     <td className="p-3">{store.gst}</td>
                     <td className="p-3">
                       <Link href={`/admin/update/${store._id}`}>
