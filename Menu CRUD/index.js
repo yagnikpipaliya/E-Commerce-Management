@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const routes = require('./routes/routes')
 const storeRoutes = require('./routes/store')
+const cartRoutes = require('./Cart/routes/cart.routes')
 
 require("dotenv").config();
 const PORT = process.env.PORT || 3001;
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/', storeRoutes);
 app.use('/admin', routes); 
+app.use('/cart', cartRoutes); 
 // app.use(express.static('uploads'))
 app.listen(PORT,() => console.log(`http://localhost:${PORT}`));
 
