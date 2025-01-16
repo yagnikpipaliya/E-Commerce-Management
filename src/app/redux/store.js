@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import adminReducer from "./e-commerce/adminSlice";
 import productReducer from "./e-commerce/productSlice";
+import AddToCartReducer from "./e-commerce/addToCart";
 
 import authReducer from './e-commerce/authSlice'
 export default configureStore({
@@ -8,5 +9,6 @@ export default configureStore({
         admin:adminReducer,
         auth:authReducer,
         products:productReducer,
+        AddToCart:AddToCartReducer
     }
 });

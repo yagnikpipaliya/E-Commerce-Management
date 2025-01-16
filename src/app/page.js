@@ -12,7 +12,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginWithGoogle } from "./redux/e-commerce/authSlice";
 import { fetchProducts } from "./redux/e-commerce/productSlice";
 
+import Top from "./assets/images/Top.avif";
+import TShirts from "./assets/images/TShirts.avif";
+import Keyboard from "./assets/images/Keyboard.avif";
+import Hoodie from "./assets/images/Hoodie.avif";
+import Headphone from "./assets/images/Headphone.avif";
+import Dress from "./assets/images/Dress.avif";
+import Cosmetic1 from "./assets/images/Cosmetic-1.avif";
+import Cosmetic2 from "./assets/images/Cosmetic-2.avif";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "./redux/e-commerce/addToCart";
+
 const Home = () => {
+  const dispatch = useDispatch();
+  const { cartItemCount } = useSelector((state) => state.AddToCart);
   const router = useRouter();
   const dispatch = useDispatch();
   const { profile, loading, error } = useSelector((state) => state.auth);
@@ -149,6 +162,8 @@ const Home = () => {
       console.error("getAllProducts err: ", error);
     }
   };
+  console.log("cartItemCount", cartItemCount);
+  const handleAddTocart = (product) => dispatch(addToCart(product));
 
   return (
     <>
@@ -196,20 +211,15 @@ const Home = () => {
               {/* hidden md:flex */}
               <button onClick={toggleModal} className="py-5 px-3">
                 <svg className="h-6 w-6 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 21h4M6 18l1.4-1.4A9 9 0 0112 3m0 0a9 9 0 014.6 13.6L18 18M9 9h.01M15 9h.01M12 15h.01"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 21h4M6 18l1.4-1.4A9 9 0 0112 3m0 0a9 9 0 014.6 13.6L18 18M9 9h.01M15 9h.01M12 15h.01" />
                 </svg>
               </button>
               <a href="/" className="py-5 px-3 relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true" width="20" height="20">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
-                {itemCount > 0 && (
-                  <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{itemCount}</span>
+                {cartItemCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cartItemCount}</span>
                 )}
               </a>
               {profile !== null ? (
@@ -303,7 +313,7 @@ const Home = () => {
                 <span className="text-center text-sm">
                   Admin?{" "}
                   <a
-                    href="/admin-login"
+                    href="/login"
                     className="relative text-[#057C80] after:content-['']  after:absolute after:left-0 after:bottom-0 after:w-full after:h-[0.5px] after:bg-[#057C80] after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
                   >
                     Login here
@@ -314,11 +324,14 @@ const Home = () => {
           </div>
         )}
       </nav>
-      <main className="flex min-h-screen flex-col items-center justify-center px-8 bg-primary">
+
+      <HeroProducts settings={settings} />
+
+      {/*<main className="flex min-h-screen flex-col items-center justify-center px-8 bg-primary">
         <form onSubmit={onSubmit}>
           <h1 className="text-4xl pb-4 font-bold">Login</h1>
           <select name="role" id="" className="w-full p-3 my-3 rounded border-none" onChange={(e) => setRole(e.target.value)} value={role} required>
-            {/* defaultValue={"store"} */}
+            {/* defaultValue={"store"} *}
             <option value="admin">Admin</option>
             <option value="store">Seller</option>
           </select>
@@ -343,7 +356,8 @@ const Home = () => {
             Submit
           </button>
         </form>
-      </main>
+      </main> */}
+
       {/* Example Item Card */}
       {/* <div className="max-w-sm rounded overflow-hidden shadow-lg">
   <img className="w-full" src="1712753465611_2458663.jpg" alt="Item Image" />
@@ -380,7 +394,9 @@ const Home = () => {
                 <div className="p-2">
                   <h3 className="text-xl font-bold">{item.title}</h3>
                   <p className="text-gray-700">{item.price}</p>
-                  <button className="mt-3 px-4 py-2 w-full bg-[#057C80] text-white hover:bg-opacity-90 transition duration-300">Add to Cart</button>
+                  <button onClick={() => handleAddTocart(item)} className="mt-3 px-4 py-2 w-full bg-[#057C80] text-white hover:bg-opacity-90 transition duration-300">
+                    Add to Cart
+                  </button>
                 </div>
               </div>
             ))}
@@ -407,9 +423,11 @@ const Home = () => {
                   />
                 </div>
                 <div className="p-2">
-                  <h3 className="text-xl font-bold">{item?.productname || "Product Name"}</h3>
-                  <p className="text-gray-700">$ {item?.price || 0}</p>
-                  <button className="mt-3 px-4 py-2 w-full bg-[#057C80] text-white hover:bg-opacity-90 transition duration-300">Add to Cart</button>
+                  <h3 className="text-xl font-bold">{item.title}</h3>
+                  <p className="text-gray-700">{item.price}</p>
+                  <button onClick={() => handleAddTocart(item)} className="mt-3 px-4 py-2 w-full bg-[#057C80] text-white hover:bg-opacity-90 transition duration-300">
+                    Add to Cart
+                  </button>
                 </div>
               </div>
             ))}
@@ -437,10 +455,105 @@ const Home = () => {
 
 export default Home;
 
-const SampleNextArrow = (props) => {
-  const { className, style, onClick } = props;
+const HeroProducts = ({ settings }) => {
+  const HomeBannerData = [
+    {
+      id: 1,
+      title: "Product 1",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      price: "$49.99",
+      image: Top,
+    },
+    {
+      id: 2,
+      title: "Product 2",
+      description: "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
+      price: "$29.99",
+      image: TShirts,
+    },
+    {
+      id: 3,
+      title: "Product 3",
+      description: "Nulla facilisi. Sed id orci quis metus lacinia consectetur.",
+      price: "$79.99",
+      image: Keyboard,
+    },
+    {
+      id: 4,
+      title: "Product 4",
+      description: "Fusce vehicula, dui sit amet mattis vehicula, leo ex ultricies nisl, nec varius arcu urna id ligula.",
+      price: "$99.99",
+      image: Hoodie,
+    },
+    {
+      id: 5,
+      title: "Product 4",
+      description: "Fusce vehicula, dui sit amet mattis vehicula, leo ex ultricies nisl, nec varius arcu urna id ligula.",
+      price: "$99.99",
+      image: Headphone,
+    },
+    {
+      id: 6,
+      title: "Product 4",
+      description: "Fusce vehicula, dui sit amet mattis vehicula, leo ex ultricies nisl, nec varius arcu urna id ligula.",
+      price: "$99.99",
+      image: Dress,
+    },
+    {
+      id: 7,
+      title: "Product 4",
+      description: "Fusce vehicula, dui sit amet mattis vehicula, leo ex ultricies nisl, nec varius arcu urna id ligula.",
+      price: "$99.99",
+      image: Cosmetic1,
+    },
+    {
+      id: 8,
+      title: "Product 4",
+      description: "Fusce vehicula, dui sit amet mattis vehicula, leo ex ultricies nisl, nec varius arcu urna id ligula.",
+      price: "$99.99",
+      image: Cosmetic2,
+    },
+  ];
+
+  const HeroSliderSetting = {
+    ...settings,
+    infinite: true, // Ensure infinite scrolling
+    autoplay: true, // Enable autoplay for continuous sliding
+    autoplaySpeed: 1000, // Adjust speed (in milliseconds)
+    nextArrow: <SampleNextArrow customStyle={{ right: "40px", height: "0px" }} />,
+    prevArrow: <SamplePrevArrow customStyle={{ left: "20px", height: "0px" }} />,
+  };
+
   return (
-    <div className={`${className} bg-white rounded-full shadow-lg`} style={{ ...style, display: "block", height: "40px", right: "10px" }} onClick={onClick}>
+    <>
+      <Slider {...HeroSliderSetting}>
+        {HomeBannerData.map((item, i) => (
+          <div key={i} className="group overflow-hidden transition-shadow duration-300 hover:shadow-md hover:border hover:border-gray-200 hover:bg-white">
+            {/* relative hover:shadow-md*/}
+            <div className="p-2 pb-0 w-full h-80 overflow-hidden relative">
+              <Image src={item.image} alt={item.description} loading="lazy" className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0 -z-10" />
+              <Image
+                src={item.image}
+                alt={item.description}
+                loading="lazy"
+                className="p-2 pb-0 w-full h-80 object-cover absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 -z-0"
+              />
+            </div>
+            {/* <div className="p-2">
+                  <h3 className="text-xl font-bold">{item.title}</h3>
+                  <p className="text-gray-700">{item.price}</p>
+                  <button className="mt-3 px-4 py-2 w-full bg-[#057C80] text-white hover:bg-opacity-90 transition duration-300">Add to Cart</button>
+                </div> */}
+          </div>
+        ))}
+      </Slider>
+    </>
+  );
+};
+const SampleNextArrow = (props) => {
+  const { className, style, onClick, customStyle } = props;
+  return (
+    <div className={`${className} bg-white rounded-full shadow-lg`} style={{ ...style, display: "block", height: "40px", right: "10px", ...customStyle }} onClick={onClick}>
       <svg
         className={` bg-gray-100 hover:bg-white rounded-full flex items-center justify-center`}
         width="44px"
@@ -460,11 +573,11 @@ const SampleNextArrow = (props) => {
   );
 };
 const SamplePrevArrow = (props) => {
-  const { className, style, onClick } = props;
+  const { className, style, onClick, customStyle } = props;
   return (
     <div
       className={`${className} bg-gray-700 text-white rounded-full flex items-center justify-center`}
-      style={{ ...style, display: "block", height: "40px", left: "-15px", zIndex: 1 }}
+      style={{ ...style, display: "block", height: "40px", left: "-15px", zIndex: 1, ...customStyle }}
       onClick={onClick}
     >
       <svg
