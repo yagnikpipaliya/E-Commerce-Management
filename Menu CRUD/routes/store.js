@@ -3,6 +3,7 @@ const multer = require("multer");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("../cloudinary");
 const Item = require("../Model/item");
+const fs = require('fs');
 
 // router.get("/products", async (req, res) => {
 //   try {
@@ -15,9 +16,10 @@ const Item = require("../Model/item");
 // });
 router.get("/", async (req, res) => {
   try {
-    const id = req.header("token");
+    const token = req.header("token");
+    const verifiedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    const getItem = await Item.find({ store: id });
+    const getItem = await Item.find({ store: verifiedToken?.id });
     // const getItem = await Item.find();
     res.status(200).json(getItem);
   } catch (error) {
@@ -46,20 +48,29 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("image"), async (req, res) => {
+// router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.array("image", 10), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+    // if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    if (!req.files || req.files.length === 0) return res.status(400).json({ error: "No files uploaded" });
+
+    const token = req.header("token");
+    const verify = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    const { productname, price, stock, description, category, costprice } = req.body;
+    // const image = req.file.filename;
+
+    // const productImage = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
+    const imageUrls = [];
+    for (let file of req.files) {
+      const productImage = await cloudinary.uploader.upload(file.path, { resource_type: "image" });
+      imageUrls.push(productImage.secure_url);
+
+      // Delete the local file after uploading it to Cloudinary
+      fs.unlinkSync(file.path);
     }
-    const id = req.header("token");
-    // const verify= jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzljY2EyYjA3NTk4ZWU3MzFjNDA2YiIsImlhdCI6MTcxODEyNTI0NH0.Adgg06RVIci1rHhq7uRiO2v18ZnVesL5Ras6nG6IDu4',process.env.JWT_SECRET_KEY)
-    // console.log(verify)
-    const { productname, price, stock } = req.body;
-    const image = req.file.filename;
-    const productImage = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
-    console.log(`req.files ${req.file.path} `);
-    console.log(`productImage ${productImage.secure_url} `);
-    const addItem = await new Item({ image, productname, price, stock, store: id }).save();
+
+    const addItem = await new Item({ image: imageUrls, productname, description, category, price, costprice, stock, store: verify.id }).save();
     // const addItem = await new Item(req.body).save();
     res.status(201).json(addItem);
   } catch (error) {

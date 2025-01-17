@@ -28,7 +28,6 @@ const Store = () => {
     //   router.push('/')
     // }
     const data = await response.json();
-    console.log(data);
     setItem(data);
   };
 
@@ -92,14 +91,12 @@ const Store = () => {
                 </tr>
               </thead>
               <tbody className="">
-                {item?.map((item, i) => {
+                {item.length > 0 && item?.map((item, i) => {
                   return (
                     <tr key={i} className="border-b">
                       <td className="p-3">
                         <div className="w-full relative pt-[100%]">
-                        {/*  */}
-                          <Image src={`/${item.image}`} alt={item.image} objectFit="fill" fill className="w-full h-full  top-0 left-0 object-cover rounded-2xl"/>
-                          {/* */}
+                          <Image src={`${item?.image[0]}`} alt={item.image} objectFit="fill" fill className="w-full h-full  top-0 left-0 object-cover rounded-2xl"/>
                         </div>
                       </td>
                       <td className="p-3">{item._id}</td>

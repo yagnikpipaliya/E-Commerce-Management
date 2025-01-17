@@ -49,14 +49,15 @@ router.post("/login", async (req, res) => {
         return res.status(400).json({ error: "Incorrect login credentials" });
       }
       const authtoken = jwt.sign({ id: response._id }, process.env.JWT_SECRET_KEY);
-      console.log(response._id, authtoken);
-      const verify = jwt.verify(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzljY2EyYjA3NTk4ZWU3MzFjNDA2YiIsImlhdCI6MTcxODEyNTI0NH0.Adgg06RVIci1rHhq7uRiO2v18ZnVesL5Ras6nG6IDu4",
-        process.env.JWT_SECRET_KEY
-      );
-      console.log(verify.id);
+      // console.log(response._id, authtoken);
+      // const verify = jwt.verify(
+      //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzljY2EyYjA3NTk4ZWU3MzFjNDA2YiIsImlhdCI6MTcxODEyNTI0NH0.Adgg06RVIci1rHhq7uRiO2v18ZnVesL5Ras6nG6IDu4",
+      //   process.env.JWT_SECRET_KEY
+      // );
+      // console.log(verify.id);
       if (response) {
-        return res.status(200).json({ message: "Login Successfully", token: response._id, user: response.username });
+        return res.status(200).json({ message: "Login Successfully", token: authtoken, user: response.username, role : "store", data: response });
+        // return res.status(200).json({ message: "Login Successfully", token: response._id, user: response.username });
       } else {
         return res.status(404).json({ message: "Invalid credentials!" });
       }

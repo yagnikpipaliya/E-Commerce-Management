@@ -1,41 +1,38 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const Login = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [role, setRole] = useState("store");
-    const [err, setErr] = useState("");
-    const router = useRouter();
-    const [token, setToken] = useState("");
-    const [user, setUser] = useState("");
-    const [isDisabled, setIsDisabled] = useState(false);
-    const [isSubmit, setIsSubmit] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("store");
+  const [err, setErr] = useState("");
+  const router = useRouter();
+  const [token, setToken] = useState("");
+  const [user, setUser] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
-
-    const onSubmit = async (e) => {
-        e.preventDefault();
-        const response = await fetch("http://localhost:3000/admin/login", {
-          method: "POST",
-          body: JSON.stringify({ username: username, password: password, role: role }),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-          },
-        });
-        if (response.status == 200) {
-          const data = await response.json();
-          console.log(data);
-          if (data.token) {
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", data.user);
-          }
-          role == "admin" ? router.push("/admin") : role == "store" ? router.push("/store") : router.push("/");
-        }
-        response.status == 404 ? setErr("Invalid credentials!") : response.status == 400 ? setErr("Invalid data") : setErr("");
-      };
-
-  
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch("http://localhost:3000/admin/login", {
+      method: "POST",
+      body: JSON.stringify({ username: username, password: password, role: role }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    if (response.status == 200) {
+      const data = await response.json();
+      console.log(data);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", data.user);
+      }
+      role == "admin" ? router.push("/admin") : role == "store" ? router.push("/store") : router.push("/");
+    }
+    response.status == 404 ? setErr("Invalid credentials!") : response.status == 400 ? setErr("Invalid data") : setErr("");
+  };
 
   return (
     <>
