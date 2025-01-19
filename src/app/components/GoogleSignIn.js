@@ -13,7 +13,7 @@ const GoogleSignIn = ({toggleLoginModal}) => {
   const handleSuccess = useGoogleLogin({
     onSuccess: (response) => {
       setUser(response);
-      dispatch(setUserProfile(response));
+      // dispatch(setUserProfile(response));
       console.log(response);
       dispatch(loginWithGoogle(response.access_token))
       toggleLoginModal()

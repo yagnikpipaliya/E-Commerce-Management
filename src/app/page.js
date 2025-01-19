@@ -204,7 +204,7 @@ const Home = () => {
         <div className=" max-w-6xl mx-auto px-4 py-12">
           <h2 className="text-3xl font-bold mb-8 ms-2">Featured Items</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-3 gap-4">
-            {products.map((item) => (
+            {products?.length > 0 && products?.map((item) => (
               <div key={item._id} className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg hover:bg-white">
                 {/* relative */}
                 <div className="p-2 pb-0 w-full h-64 overflow-hidden relative">

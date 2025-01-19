@@ -2,12 +2,48 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "../redux/e-commerce/addToCart";
+import { toggleLoginModal } from "../redux/e-commerce/authSlice";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_PUBLISHABLE_KEY);
 
 const Cart = () => {
   const dispatch = useDispatch();
   const { cart, total } = useSelector((state) => state.AddToCart);
+  const { profile, isLoginModalOpen } = useSelector((state) => state.auth);
+  console.log("profile", profile);
 
   const handleRemoveFromCart = (item) => dispatch(removeFromCart(item));
+
+  const handleCheckout = async () => {
+    if (!profile) {
+      dispatch(toggleLoginModal(true));
+      return;
+    }
+    console.log("handleCheckout");
+    const stripe = await stripePromise;
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}user/create-checkout-session`,
+        {
+          cartItems: cart,
+          totalAmount: total,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const data = await response?.data?.data;
+      if (data?.url) {
+        window.location.href = data.url; // Redirect to Stripe Checkout
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
+  };
 
   return (
     <>
@@ -229,7 +265,7 @@ const Cart = () => {
                     </div>
 
                     <div className="flex justify-end">
-                      <a href="#" className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600">
+                      <a onClick={handleCheckout} href="#" className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600">
                         Checkout
                       </a>
                     </div>
